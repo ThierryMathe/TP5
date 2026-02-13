@@ -48,7 +48,9 @@ class Article:
         quantite : int
             Quantité  à ajouter au stock
         """
-        self.__quantite_en_stock += int(quantite)
+        if not(isinstance(quantite, int)) or quantite <= 0:
+            raise ValueError("La quantité doit être un entier positif")
+        self.__quantite_en_stock += quantite
 
     def vendre(self, quantite: int) -> bool:
         """Retire la quantité données au stock de l'aricle est indique si
@@ -73,7 +75,7 @@ class Article:
 
     def prix_ttc(self):
         """Renvoie le prix de l'artique avec un taux de taxes de 20%"""
-        return self.get_prix_ht() * 1.
+        return self.get_prix_ht() * 1.2
 
     def __str__(self):
         return f"{self.get_intitule()} ({self.get_reference()}) : {self.get_prix_ht()}€ HT."
