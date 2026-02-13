@@ -56,6 +56,7 @@ class Flacon:
             raise ValueError("La concentration doit être comprise entre 0 et 1")
         self.__concentration = valeur
 
+
     def volume_sirop(self):
         """Donne le volume de sirop dilué dans le flacon"""
         return self.volume * self.concentration
@@ -80,43 +81,50 @@ class Flacon:
             Indique si l'opération a eu lieu: `True` si le flacon est rempli,
             `False` si non.
         """
+        old_volume = self.volume
+        old_concentration = self.concentration
         try:
-            self.__set_volume(self.volume +  volume_sirop + volume_eau)
-            self.__set_concentration((volume_sirop + self.volume_sirop()) / self.volume)
+            nx_volume_sirop = self.volume_sirop() + volume_sirop
+            nx_volume_eau = self.volume_eau() + volume_eau
+            nx_volume = nx_volume_eau + nx_volume_sirop
+            nll_concentration = nx_volume_sirop / nx_volume
+            self.__set_concentration(nll_concentration)
+            self.__set_volume(nx_volume)
         except ValueError:
+            self.__set_concentration(old_concentration)
+            self.__set_volume(old_volume)
             return False
         return True
 
-    def vider(self, volume: float) -> bool:
-        """Retire du flacon le volume de liquide indiqué
+    def retier(self, volume: float) -> dict[str,float]:
+        """Retire du flacon le volume de liquide indiqué et revoie
+        les volumes de sirop et d'eau retirés.
 
         Parameters
         ----------
         volume : float
             Volume à retirer
 
-        Returns
-        -------
-        bool
-            indique si l'opération s'est bien déroulée: `True` si le
-            le volume a été retiré, `False` sinon.
+        Raise
+        -----
+        ValueError: si le volume à retirer est supérieur au volume disponible
         """
-        try:
-            self.__set_volume(self.volume - volume)
-        except ValueError:
-            return False
-        return True
+        self.__set_volume(self.volume - volume)
+        return {
+            "volume_sirop": volume * self.concentration,
+            "volume_eau": volume * (1 - self.concentration)
+        }
 
     def transvaser(self, autre: Flacon, volume: float) -> bool:
-        """Transvase un le volume donné de liquite dans un autre
-        flacon.
+        """Transvase un le volume donné de liquite d'un autre Flacon
+        dans ce flacon.
 
         Parameters
         ----------
         autre : Flacon
-            flacon dans lequel le volume va être transvasé
+            flacon dans auquel on retire le volume
         volume : float
-            volume de liquite à transvaser.
+            volume de liquite transvasé.
 
         Returns
         -------
@@ -125,13 +133,14 @@ class Flacon:
             le volume a été transvasé, `False` sinon.
         """
         try:
-            self.vider(volume)
+            a_ajouter = autre.retier(volume)
+            if self.remplir(**a_ajouter):
+                return True
+            else:
+                raise ValueError
         except ValueError:
+            autre.remplir(**a_ajouter)
             return False
-        return autre.remplir(
-            volume_sirop = volume * self.concentration,
-            volume_eau = volume * (1 - self.concentration),
-        )
 
     def __str__(self):
-        return f"Falcon {self.__etiquette}"
+        return f"Falcon {self.__etiquette} {self.volume}/{self.capacite} concentration:{self.concentration}"

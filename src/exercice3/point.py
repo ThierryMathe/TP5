@@ -1,7 +1,21 @@
 from math import sqrt, atan2, sin, cos
-type nb = int|float
+
+type nb = int | float
+
+
 class Point:
-    def __init__(self,x: nb, y: nb):
+    """_suMmmary_
+
+    Parameters
+    ----------
+    x : nb
+        _description_
+    y : nb
+        _description_
+    """
+
+    def __init__(self, x: nb, y: nb):
+
         self.__x = x
         self.__y = y
 
@@ -21,23 +35,24 @@ class Point:
     def t(self):
         return atan2(self.y, self.x)
 
-    def homothetie(self,k: nb):
+    def homothetie(self, k: nb):
         self.__x = k * self.x
         self.__y = k * self.y
 
-    def translation(self, dx: nb, dy:nb):
+    def translation(self, dx: nb, dy: nb):
         self.__x = self.x + dx
         self.__y = self.y + dy
 
-    def rotation(self, a:nb):
+    def rotation(self, a: nb):
         r = self.r
-        self.__x = r * cos(self.t + a)
-        self.__x = r * sin(self.t + a)
+        t = self.t
+        self.__x = r * cos(t + a)
+        self.__y = r * sin(t + a)
 
     def __str__(self):
         return f"({round(self.x,3)};{round(self.y,3)})"
 
-    def __eq__(self, other:object):
-        if not(isinstance(other, Point)):
+    def __eq__(self, other: object):
+        if not (isinstance(other, Point)):
             return NotImplemented
         return self.x == other.x and self.y == other.y

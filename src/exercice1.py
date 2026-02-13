@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 class Article:
-    """Modélisatin d'un article avec stock
+    """Modélisation d'un article avec gestion du stock
 
         Parameters
         ----------
@@ -18,7 +18,8 @@ class Article:
         self.__reference: int = reference
         self.__intitule: str = intitule
         self.__prix_ht: float = prix_ht
-        self.__quantite_en_stock: int = quantite_en_stock
+        self.__quantite_en_stock: int = 0
+        self.approvisionner(quantite_en_stock)
 
     def get_reference(self) -> int:
         """Donne la référence de l'article
@@ -47,6 +48,11 @@ class Article:
         ----------
         quantite : int
             Quantité  à ajouter au stock
+
+        Raises
+        ------
+        ValueError
+            Si  `quantite` n'est pas un entier positif
         """
         if not(isinstance(quantite, int)) or quantite <= 0:
             raise ValueError("La quantité doit être un entier positif")
