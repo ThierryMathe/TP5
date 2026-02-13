@@ -24,22 +24,22 @@ class Article:
         """Donne la référence de l'article
         """
         return self.__reference
-    
+
     def get_intitule(self) -> str:
         """Donne le nom de l'article
         """
         return self.__intitule
-    
+
     def get_prix_ht(self) -> float:
         """Donne le prix hors taxe de l'article
         """
         return self.__prix_ht
-    
+
     def get_quantite_en_stock(self) -> int:
         """Donne la quantité en stock de l'article
         """
         return self.__quantite_en_stock
-    
+
     def approvisionner(self, quantite:int) -> None:
         """Ajoute la quantité donnée au stock de l'article
 
@@ -51,7 +51,7 @@ class Article:
         self.__quantite_en_stock += int(quantite)
 
     def vendre(self, quantite: int) -> bool:
-        """Retire la quantité données au stock de l'aricle est indique si 
+        """Retire la quantité données au stock de l'aricle est indique si
         l'opération s'est bien déroulée.
 
         Parameters
@@ -70,16 +70,18 @@ class Article:
             return True
         else:
             return False
-        
+
     def prix_ttc(self):
         """Renvoie le prix de l'artique avec un taux de taxes de 20%"""
         return self.get_prix_ht() * 1.
-    
+
     def __str__(self):
-        return f"{self.get_intitule()} ({self.get_reference()}) : {self.get_prix_ht}€ HT."
-    
-    def __eq__(self, o: Article):
+        return f"{self.get_intitule()} ({self.get_reference()}) : {self.get_prix_ht()}€ HT."
+
+    def __eq__(self, o: object):
+        if(not isinstance(o, Article)):
+            return NotImplemented
         return self.get_reference() == o.get_reference()
-    
+
     def __lt__(self, o: Article):
         return self.get_quantite_en_stock() < o.get_quantite_en_stock()
