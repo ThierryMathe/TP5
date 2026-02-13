@@ -15,7 +15,6 @@ class Point:
     """
 
     def __init__(self, x: nb, y: nb):
-
         self.__x = x
         self.__y = y
 
